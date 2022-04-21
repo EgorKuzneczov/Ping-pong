@@ -35,7 +35,41 @@ game = True
 finish = False
 FPS = 60
 clock = time.Clock()
+font.init()
+font = font.Font(None,36)
+lose1 = font.render('Игрок1 проиграл!', True, (255, 0, 0))
+lose2 = font.render('Игрок2 проиграл!', True, (255, 0, 0))
 
-font1 = font.SysFont("Arial",36)
-lose1 = font1.render('Игрок1 проиграл!', True, (255, 0, 0))
-lose2 = font1.render('Игрок2 проиграл!', True, (255, 0, 0))
+racket1 = Player('racket.png', 30, 400, 25, 180, 10)
+racket2 = Player('racket.png', 620, 200, 25, 180, 10)
+ball = Player('ball.png', 200, 200, 75, 75, 50)
+
+speed_x = 3
+speed_y = 3
+
+while game:
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+        if finish != True:
+            window.fill(background)
+            racket1.update_l()
+            racket2.update_r()
+            ball.rect.x += speed_x
+            ball.rect.y += speed_y
+        if sprite.collide_rect(racket1, ball) or sprite.collide_rect(racket2, ball):
+            speed_x *= -1
+        if ball.rect.y > height - 60 or ball.rect.y <0:
+            speed_y *= -1
+        if ball.rect.x < 0:
+            finish = True
+            window.blit(lose1,(200, 200))
+        if ball.rect.x > 625:
+            finish = True
+            window.blit(lose2,(200, 200))
+        racket1.reset()
+        racket2.reset()
+        ball.reset()
+    display.update()
+    clock.tick(FPS)
+        
